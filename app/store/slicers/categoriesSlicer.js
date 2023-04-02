@@ -13,7 +13,7 @@ const categoriesSlice = createSlice({
     initialState: {
         categories: [],
         next_page: 1,
-        loaded: false,
+        loading: true,
         error: false,
     },
     reducers: {
@@ -22,11 +22,10 @@ const categoriesSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(fetchCategories.pending, (state, action) => {
-                state.loaded = false;
                 state.error = false;
             })
             .addCase(fetchCategories.fulfilled, (state, action) => {
-                state.loaded = true;
+                state.loading = false;
                 state.error = false;
                 let categories = action.payload.filter(category => {
                     return category.name !== "Misc"

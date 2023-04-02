@@ -2,6 +2,7 @@ import { API_URL, APP_VERSIONS } from '../../../env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import { WC_CREDENIALS } from '../../../env';
+import {decode as base64_decode, encode as base64_encode} from 'base-64';
 
 class ApiRequestService {
     /**
@@ -28,7 +29,7 @@ class ApiRequestService {
             'Content-Type': 'application/json',
             'Client-Version': APP_VERSIONS[Platform.OS] || 'error',
             'Client-Platform': Platform.OS,
-            Authorization: 'Bearer ' + (await AsyncStorage.getItem('access_token')),
+            Authorization: 'Basic ' + base64_encode(WC_CREDENIALS.consumer_key + ':' + WC_CREDENIALS.consumer_secret),
         };
 
         return headers;
@@ -150,10 +151,6 @@ class ApiRequestService {
 
             if (typeof data === 'object' && !(data instanceof FormData)) {
                 data = { ...data };
-            }
-            
-            if (typeof WC_CREDENIALS === 'object' && !(data instanceof FormData)) {
-                data = { ...data, ...WC_CREDENIALS };
             }
 
             if (method === 'GET') {

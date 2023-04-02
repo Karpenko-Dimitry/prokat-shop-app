@@ -14,8 +14,10 @@ export const APP_VERSIONS = {
 };
 
 export const WC_CREDENIALS = {
-    consumer_key: 'ck_dedb39388d6a278d8917497bce0ce4bb2d0b6dfa', 
-    consumer_secret: 'cs_2fcfa14adf065468eb37663fe57d92b8ca3e38ab'}
+    consumer_key: 'ck_2baa47e7798df25d4a3ea55f58c7ec980f195822', 
+    consumer_secret: 'cs_4d6944fd274a12ba2139fe64f26fdb800da69c6f'}
 ;
 
 export const APP_NAME = 'ПРОКАТ.УКР'
+export const PHONE_NUMBER_KS = '+380976164343'
+export const PHONE_NUMBER_MTS = '+380666260790'

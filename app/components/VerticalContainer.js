@@ -4,10 +4,11 @@ import Product from "./Product";
 import Category from "./Category";
 import { scale } from "../services/HelperService";
 import { colors, companyColor } from "../services/ColorService";
+import { useTheme } from "@react-navigation/native";
 
-const VerticalContainer = ({ items = [], categoryId = null, type = 'products', title = "", navigation }) => {
-    let isDarkMode = useColorScheme() === 'dark';
-    let styles = getStyles({ isDarkMode });
+const VerticalContainer = ({ items = [], category = null, type = 'products', title = "", navigation }) => {
+    let { colors } = useTheme();
+    let styles = getStyles({ colors });
 
     const navigationAll = () => {
         if (navigation) {
@@ -15,8 +16,8 @@ const VerticalContainer = ({ items = [], categoryId = null, type = 'products', t
                 navigation.navigate('Catalog')
             }
             
-            if (type === 'products' && categoryId) {
-                navigation.navigate('Category', {name: title, id: categoryId})
+            if (type === 'products' && category) {
+                navigation.navigate('Category', {name: category.name, item: category})
             }
         }
          
@@ -54,9 +55,7 @@ const VerticalContainer = ({ items = [], categoryId = null, type = 'products', t
     )
 }
 
-const getStyles = ({ isDarkMode = false, styles = {} }) => {
-    const modeColors = isDarkMode ? colors.darkModeColors : colors.whiteModeColors;
-
+const getStyles = ({ colors = {} }) => {
     return StyleSheet.create({
         container: {
             marginTop: scale(20),
@@ -70,7 +69,7 @@ const getStyles = ({ isDarkMode = false, styles = {} }) => {
         title: {
             textAlign: 'right',
             fontWeight: '600',
-            color: colors.textColor
+            color: colors.text
         },
         titleLink: {
             textAlign: 'right',

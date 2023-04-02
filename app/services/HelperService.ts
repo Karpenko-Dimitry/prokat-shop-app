@@ -16,6 +16,11 @@ export const verticalScale = (size: number) =>
         (Math.max(width, height) / guidelineBaseHeight) * size,
     );
 
+export const stripHtml = (html: string) => {
+    const regex = /(<([^>]+)>)/ig;
+    return html.replace(regex, '');
+}
+
 export const moderateScale = (size: number, factor = 0.5) =>
     size + (scale(size) - size) * factor;
 

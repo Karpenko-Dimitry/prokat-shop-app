@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, useColorScheme, ScrollView } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from "react-native";
 import { scale } from "../services/HelperService";
 import VerticalContainer from "../components/VerticalContainer"
-import { colors, companyColor } from "../services/ColorService";
+import { companyColor } from "../services/ColorService";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from "react-redux";
+import { useTheme } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }) => {
     const categories = useSelector(state => state.categoriesStore.categories);
     const products = useSelector(state => state.productsStore.products);
+    const { colors } = useTheme();
+    const styles = getStyles({ colors })
 
-    const isDarkMode = useColorScheme() === 'dark';
-    const styles = getStyles({ isDarkMode })
-    
     const getProductsByCategoryId = (categoryId) => {
         return products.filter(product => {
             let ids = product.categories?.map(i => i.id);
@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
                     {categories.length > 0 && categories.map((category, key) => key <= 4 && (
                         <VerticalContainer 
                             key={key + '_' + category.id} 
-                            categoryId={category.id}
+                            category={category}
                             items={getProductsByCategoryId(category.id)} 
                             title={category.name} 
                             navigation={navigation}
@@ -46,9 +46,7 @@ const HomeScreen = ({ navigation }) => {
     )
 }
 
-const getStyles = ({ isDarkMode = false, styles = {} }) => {
-    const modeColors = isDarkMode ? colors.darkModeColors : colors.whiteModeColors;
-
+const getStyles = ({ colors = {}}) => {
     return StyleSheet.create({
         container: {
             flex: 1

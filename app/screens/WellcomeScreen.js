@@ -2,11 +2,10 @@ import React  from "react";
 import { View, Text, StyleSheet, Image, useColorScheme } from "react-native";
 import { images } from "../../assets/images/images";
 import { APP_NAME } from "../../env";
-import { colors, companyColor } from "../services/ColorService";
+import { companyColor } from "../services/ColorService";
 
 const WellcomeScreen = ({ navigation }) => {
-    const isDarkMode = useColorScheme() === 'dark';
-    const styles = getStyles(isDarkMode);
+    const styles = getStyles();
 
     return (
         <View style={styles.container}>
@@ -20,9 +19,7 @@ const WellcomeScreen = ({ navigation }) => {
     )
 }
 
-const getStyles = (isDarkMode = false) => {
-    const modeColors = isDarkMode ? colors.darkModeColors : colors.whiteModeColors;
-
+const getStyles = () => {
     return StyleSheet.create({
         container: {
             backgroundColor: '#fff',

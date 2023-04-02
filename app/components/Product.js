@@ -1,17 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, useColorScheme, TouchableOpacity } from "react-native";
-import { colors } from "../services/ColorService";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { scale } from "../services/HelperService";
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useTheme } from "@react-navigation/native";
 
 const Product = ({ product, styles = {}, width, navigation }) => {
-    const isDarkMode = useColorScheme() === 'dark';
-    const modeColors = isDarkMode ? colors.darkModeColors : colors.whiteModeColors;
-
-    styles = getStyles({ styles, isDarkMode, width });
+    const { colors } = useTheme();
+    styles = getStyles({ colors, styles, width });
 
     let isDiscount = product.price < product.regular_price;
-    let priceColor = isDiscount ? 'red' : modeColors.textColor;
+    let priceColor = isDiscount ? 'red' : colors.text;
 
     let DiscountLabel = ({color, text}) => {
         let style = StyleSheet.create({
@@ -47,21 +44,19 @@ const Product = ({ product, styles = {}, width, navigation }) => {
                 {isDiscount && <Text style={styles.discountText}>{product.price ? product.regular_price + ' грн/мес' : ''}</Text>}
                 <Text style={{ ...styles.priceText, color: priceColor }}>{product.price ? product.price + ' грн/мес' : ''}</Text>
             </View>
-            {isDiscount && <DiscountLabel text="cкидка"/>}
+            {isDiscount && <DiscountLabel text="акция"/>}
         </TouchableOpacity>
     );
 }
 
-const getStyles = ({ styles, isDarkMode, width = 170 }) => {
-    const modeColors = isDarkMode ? colors.darkModeColors : colors.whiteModeColors;
-
+const getStyles = ({ colors, styles, width = 170 }) => {
     return StyleSheet.create({
         container: {
             position: 'relative',
             justifyContent: 'space-between',
             padding: scale(10),
             borderWidth: 1,
-            borderColor: modeColors.borderColor,
+            borderColor: colors.border,
             marginTop: scale(10),
             ...(styles.container || {})
         },
@@ -75,7 +70,7 @@ const getStyles = ({ styles, isDarkMode, width = 170 }) => {
             width: scale(width),
         },
         text: {
-            color: modeColors.textColor,
+            color: colors.text,
             fontSize: scale(12),
             textAlign: 'center'
         },
@@ -83,12 +78,12 @@ const getStyles = ({ styles, isDarkMode, width = 170 }) => {
             marginTop: scale(10),
         },
         priceText: {
-            color: modeColors.textColor,
+            color: colors.text,
             fontWeight: 700,
             fontSize: scale(12),
         },
         discountText: {
-            color: modeColors.textColor,
+            color: colors.text,
             textDecorationLine: 'line-through',
             fontSize: scale(10),
         }
