@@ -12,17 +12,14 @@ import { useTheme } from "@react-navigation/native";
 const CartScreen = ({ navigation }) => {
     const dispatcher = useDispatch();
     const { colors } = useTheme();
-    const { width } = Dimensions.get('window');
-    const styles = getStyles({ colors, width })
+    const { width, height } = Dimensions.get('window');
+    const _width = Math.min(width, height);
+
+    const styles = getStyles(colors, _width)
     const cartStore = useSelector((state) => state.cartStore.products);
     const amount = useMemo(() => {
         return cartStore.reduce((a, b) => a + b.product.price * b.count, 0)
     }, [cartStore])
-
-    const checkout = () => {
-        console.log('wwww')
-    }
-
 
     const EmptyCart = () => {
         return (
@@ -36,35 +33,37 @@ const CartScreen = ({ navigation }) => {
     return (
         <>
             {cartStore.length >= 1 ? (
-                <ScrollView style={styles.container}>
-                    {cartStore.length >= 1 && cartStore.map((cart) => {
-                        const isDiscount = cart.product?.price < cart.product?.regular_price;
-                        const priceColor = isDiscount ? 'red' : colors.text;
+                <ScrollView style={styles.container} contentContainerStyle={{alignItems: 'center'}}>
+                    <View style={{width: _width}}>
+                        {cartStore.length >= 1 && cartStore.map((cart) => {
+                            const isDiscount = cart.product?.price < cart.product?.regular_price;
+                            const priceColor = isDiscount ? 'red' : colors.text;
 
-                        return (
-                            <View key={cart.product.id} style={styles.productBox}>
-                                <View style={styles.imageContainer}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('Product', {name: cart.product.name, item: cart.product})}>
-                                        <Image style={styles.image} source={{ uri: cart.product.images[0].src }} />
-                                    </TouchableOpacity>
-                                    <View style={styles.counterConainer}>
-                                        <TouchableOpacity onPress={() => dispatcher(removeFromCart({ product: cart.product }))} style={styles.counter}><Text style={styles.counterText}>-</Text></TouchableOpacity>
-                                        <Text style={styles.count}>{cart.count}</Text>
-                                        <TouchableOpacity onPress={() => dispatcher(addToCart({ product: cart.product }))} style={styles.counter}><Text style={styles.counterText}>+</Text></TouchableOpacity>
+                            return (
+                                <View key={cart.product.id} style={styles.productBox}>
+                                    <View style={styles.imageContainer}>
+                                        <TouchableOpacity onPress={() => navigation.navigate('Product', { name: cart.product.name, item: cart.product })}>
+                                            <Image style={styles.image} source={{ uri: cart.product.images[0].src }} />
+                                        </TouchableOpacity>
+                                        <View style={styles.counterConainer}>
+                                            <TouchableOpacity onPress={() => dispatcher(removeFromCart({ product: cart.product }))} style={styles.counter}><Text style={styles.counterText}>-</Text></TouchableOpacity>
+                                            <Text style={styles.count}>{cart.count}</Text>
+                                            <TouchableOpacity onPress={() => dispatcher(addToCart({ product: cart.product }))} style={styles.counter}><Text style={styles.counterText}>+</Text></TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    <View style={styles.descriptionContainer}>
+                                        <Text style={styles.descriptionTitle}>{cart.product.name}</Text>
+                                        <View style={styles.priceContainer}>
+                                            {isDiscount && <Text style={styles.discountText}>{cart.product.price ? cart.product.regular_price + ' грн/мес' : ''}</Text>}
+                                            <Text style={{ ...styles.priceText, color: priceColor }}>{cart.product.price ? cart.product.price + ' грн/мес' : ''}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                                <View style={styles.descriptionContainer}>
-                                    <Text style={styles.descriptionTitle}>{cart.product.name}</Text>
-                                    <View style={styles.priceContainer}>
-                                        {isDiscount && <Text style={styles.discountText}>{cart.product.price ? cart.product.regular_price + ' грн/мес' : ''}</Text>}
-                                        <Text style={{ ...styles.priceText, color: priceColor }}>{cart.product.price ? cart.product.price + ' грн/мес' : ''}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        )
-                    })}
-                    <View style={styles.butonContainer}>
-                        <Button text={"Оформить заказ - " + amount + ' грн'} onPress={() => navigation.navigate('Checkout', { name: 'Оформить заказ' })} />
+                            )
+                        })}
+                        <View style={styles.butonContainer}>
+                            <Button text={"Оформить заказ - " + amount + ' грн'} onPress={() => navigation.navigate('Checkout', { name: 'Оформить заказ' })} />
+                        </View>
                     </View>
                 </ScrollView>
             ) : <EmptyCart />}
@@ -73,7 +72,7 @@ const CartScreen = ({ navigation }) => {
     )
 };
 
-const getStyles = ({ colors, width }) => {
+const getStyles = (colors, width) => {
     return StyleSheet.create({
         container: {
             flex: 1,
@@ -146,8 +145,8 @@ const getStyles = ({ colors, width }) => {
             alignItems: 'center'
         },
         emptyCartImage: {
-            width: width,
-            height: width
+            width: width - 100,
+            height: width - 100
         },
         emptyCartText: {
             fontSize: scale(20),

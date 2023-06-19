@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { scale } from "../services/HelperService";
 import VerticalContainer from "../components/VerticalContainer"
 import { companyColor } from "../services/ColorService";
@@ -20,33 +20,42 @@ const HomeScreen = ({ navigation }) => {
         })
     }
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
-                    <VerticalContainer items={categories} type={"categories"} title={'Категории товаров'} navigation={navigation}/>
-                    {categories.length > 0 && categories.map((category, key) => key <= 4 && (
-                        <VerticalContainer 
-                            key={key + '_' + category.id} 
-                            category={category}
-                            items={getProductsByCategoryId(category.id)} 
-                            title={category.name} 
-                            navigation={navigation}
-                        />
-                    ))}
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Catalog')} style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Все категории
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
+            <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[companyColor]} />}>
+                <VerticalContainer items={categories} type={"categories"} title={'Категории товаров'} navigation={navigation} />
+                {categories.length > 0 && categories.map((category, key) => key <= 4 && (
+                    <VerticalContainer
+                        key={key + '_' + category.id}
+                        category={category}
+                        items={getProductsByCategoryId(category.id)}
+                        title={category.name}
+                        navigation={navigation}
+                    />
+                ))}
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Catalog')} style={styles.button}>
+                        <Text style={styles.buttonText}>
+                            Все категории
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </SafeAreaView>
 
     )
 }
 
-const getStyles = ({ colors = {}}) => {
+const getStyles = ({ colors = {} }) => {
     return StyleSheet.create({
         container: {
             flex: 1

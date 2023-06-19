@@ -21,11 +21,11 @@ const ConditionsScreen = () => {
                 </Text>
                 <View style={styles.phoneBox}>
                     <Text style={{ ...styles.text, marginRight: scale(10) }}>Киевстар: {PHONE_NUMBER_KS}</Text>
-                    <Phone phoneNumber={PHONE_NUMBER_KS} size="35" position="relative" />
+                    <Phone phoneNumber={PHONE_NUMBER_KS} width={20} position="relative" />
                 </View>
                 <View style={styles.phoneBox}>
                     <Text style={{ ...styles.text, marginRight: scale(10) }}>МТС: {PHONE_NUMBER_MTS}</Text>
-                    <Phone phoneNumber={PHONE_NUMBER_MTS} size="35" position="relative" />
+                    <Phone phoneNumber={PHONE_NUMBER_MTS} width={20} position="relative" />
                 </View>
             </View>
             <View style={styles.textBox}>

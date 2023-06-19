@@ -12,12 +12,13 @@ import { removeFavorit } from "../store/slicers/favoritsSlicer";
 const FavoritScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const { colors } = useTheme();
-    const { width } = Dimensions.get('window');
-    const styles = getStyles({ colors, width })
+    const { width, height } = Dimensions.get('window');
+    const _width = Math.min(width, height)
+    const styles = getStyles(colors, _width )
     const favorits = useSelector((state) => state.favoritsStore.favorits);
 
     const removeFromFavorites = (product) => {
-        dispatch(removeFavorit({product: product}))
+        dispatch(removeFavorit({ product: product }))
     }
 
     const EmptyCart = () => {
@@ -32,38 +33,40 @@ const FavoritScreen = ({ navigation }) => {
     return (
         <>
             {favorits.length >= 1 ? (
-                <ScrollView style={styles.container}>
-                    {favorits.length >= 1 && favorits.map((product) => {
-                        const isDiscount = product?.price < product?.regular_price;
-                        const priceColor = isDiscount ? 'red' : colors.text;
+                <ScrollView style={styles.container} contentContainerStyle={{alignItems: 'center'}}>
+                    <View style={{ width: _width }}>
+                        {favorits.length >= 1 && favorits.map((product) => {
+                            const isDiscount = product?.price < product?.regular_price;
+                            const priceColor = isDiscount ? 'red' : colors.text;
 
-                        return (
-                            <View key={product.id} style={styles.productBox}>
-                                <View style={styles.imageContainer}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('Product', { name: product.name, item: product })}>
-                                        <Image style={styles.image} source={{ uri: (product?.images?.length ? product.images[0].src : '') }} />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.descriptionContainer}>
-                                    <Text style={styles.descriptionTitle}>{product.name}</Text>
-                                    <TouchableOpacity style={styles.heartIcon} onPress={() => removeFromFavorites(product)}>
-                                        <Ionicons name={'heart-circle-outline'} size={scale(35)} color={companyColor} />
-                                    </TouchableOpacity>
-                                    <View style={styles.priceContainer}>
-                                        {isDiscount && <Text style={styles.discountText}>{product.price ? product.regular_price + ' грн/мес' : ''}</Text>}
-                                        <Text style={{ ...styles.priceText, color: priceColor }}>{product.price ? product.price + ' грн/мес' : ''}</Text>
+                            return (
+                                <View key={product.id} style={styles.productBox}>
+                                    <View style={styles.imageContainer}>
+                                        <TouchableOpacity onPress={() => navigation.navigate('Product', { name: product.name, item: product })}>
+                                            <Image style={styles.image} source={{ uri: (product?.images?.length ? product.images[0].src : '') }} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.descriptionContainer}>
+                                        <Text style={styles.descriptionTitle}>{product.name}</Text>
+                                        <TouchableOpacity style={styles.heartIcon} onPress={() => removeFromFavorites(product)}>
+                                            <Ionicons name={'heart-circle-outline'} size={scale(35)} color={companyColor} />
+                                        </TouchableOpacity>
+                                        <View style={styles.priceContainer}>
+                                            {isDiscount && <Text style={styles.discountText}>{product.price ? product.regular_price + ' грн/мес' : ''}</Text>}
+                                            <Text style={{ ...styles.priceText, color: priceColor }}>{product.price ? product.price + ' грн/мес' : ''}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        )
-                    })}
+                            )
+                        })}
+                    </View>
                 </ScrollView>
             ) : <EmptyCart />}
         </>
     )
 };
 
-const getStyles = ({ colors, width }) => {
+const getStyles = (colors, width) => {
     return StyleSheet.create({
         container: {
             flex: 1,

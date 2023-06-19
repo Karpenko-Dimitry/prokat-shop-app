@@ -15,7 +15,10 @@ const ProductScreen = ({ route }) => {
     const dispatch = useDispatch();
     const { colors } = useTheme();
     const product = route?.params?.item || null;
-    const width = Dimensions.get('window').width;
+    
+    const { width, height } = Dimensions.get('window');
+    const _width = Math.min(width, height)
+
     const styles = getStyles({ colors })
     const isDiscount = product?.price < product?.regular_price;
     const priceColor = isDiscount ? 'red' : colors.text;
@@ -65,7 +68,7 @@ const ProductScreen = ({ route }) => {
             {product && (
                 <ScrollView style={styles.container}>
                     <View style={styles.bannerContainer}>
-                        <Banner width={width - (scale(15) * 2)} images={product.images} />
+                        <Banner width={_width - (scale(15) * 2)} images={product.images} />
                         <TouchableOpacity style={styles.heartIcon} onPress={addToFavorites}>
                             <Ionicons name={'heart-circle-outline'} size={scale(35)} color={heartColor} />
                         </TouchableOpacity>
@@ -84,7 +87,7 @@ const ProductScreen = ({ route }) => {
                             {isDiscount && <Text style={styles.discountText}>{product.price ? product.regular_price + ' грн/мес' : ''}</Text>}
                         </View>
                         <View style={styles.buttonRow}>
-                            <Phone size="80" position="relative"/>
+                            <Phone size={scale(80)} position="relative"/>
                             <TouchableOpacity onPress={() => addCart(product)} style={styles.button}>
                                 <Text style={styles.buttonText}>
                                     В корзину
@@ -109,9 +112,10 @@ const ProductScreen = ({ route }) => {
 const getStyles = ({ colors }) => {
     return StyleSheet.create({
         container: {
-            flex: 1,
+            flex: 1
         },
         bannerContainer: {
+            alignItems: 'center',
             paddingVertical: scale(10),
             paddingHorizontal: scale(15)
         },
@@ -187,6 +191,7 @@ const getStyles = ({ colors }) => {
         button: {
             marginLeft: scale(20),
             padding: scale(10),
+            height: scale(42),
             backgroundColor: companyColor,
             elevation: 20,
             borderWidth: 1,

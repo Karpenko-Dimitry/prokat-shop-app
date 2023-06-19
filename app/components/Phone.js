@@ -6,10 +6,9 @@ import { useTheme } from "@react-navigation/native";
 import { scale } from "../services/HelperService";
 import { PHONE_NUMBER_MTS } from "../../env";
 
-const Phone = ({ size = 100, position = 'absolute', phoneNumber = null }) => {
+const Phone = ({ position = 'absolute', phoneNumber = null, width = 42 }) => {
     const { colors } = useTheme();
-    const { width, height } = Dimensions.get('window');
-    const styles = getStyles(colors, width, size, position);
+    const styles = getStyles(colors, width, position);
     const phone = (phoneNumber) => {
         Linking.openURL(`tel:${phoneNumber}`)
     }
@@ -22,9 +21,7 @@ const Phone = ({ size = 100, position = 'absolute', phoneNumber = null }) => {
 
 }
 
-const getStyles = (colors, width, size = 100, position = 'absolute') => {
-    size = size / 100;
-
+const getStyles = (colors, width, position = 'absolute') => {
     position = position == 'absolute' ? {
         position: 'absolute',
         bottom: scale(30),
@@ -35,14 +32,14 @@ const getStyles = (colors, width, size = 100, position = 'absolute') => {
         phone: Object.assign({
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: width / 16 + size,
-            width: width / 8 * size,
-            height: width / 8 * size,
+            borderRadius: width / 2,
+            width: width,
+            height: width,
             backgroundColor: companyColor
         }, position),
         phoneIcon: {
             color: 'white',
-            fontSize: scale(25 * size)
+            fontSize: scale(width / 2)
         }
     })
 }
